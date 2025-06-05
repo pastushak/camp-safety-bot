@@ -311,9 +311,9 @@ class CampSafetyBot:
             ],
             [
                 InlineKeyboardButton("7️⃣", callback_data="group_4"),
-                InlineKeyboardButton("8️⃣", callback_data="group_5")
+                InlineKeyboardButton("8️⃣", callback_data="group_5"),
+                InlineKeyboardButton("🤐", callback_data="group_skip")
             ],
-            [InlineKeyboardButton("🤐 Не хочу вказувати", callback_data="group_skip")],
             [InlineKeyboardButton("🔙 Назад", callback_data="tell_story")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
