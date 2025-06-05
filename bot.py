@@ -86,6 +86,8 @@ class CampSafetyBot:
             await self.back_to_menu(query)
         elif query.data == "back_to_sos":
             await self.sos_help_menu(query)
+        elif query.data == "cant_write_now":
+            await self.cant_write_now(query, context)
 
     async def explain_bullying(self, query):
         """Пояснення що таке булінг"""
@@ -299,7 +301,7 @@ class CampSafetyBot:
 """
         
         keyboard = [
-            [InlineKeyboardButton("🚫 Не можу писати зараз", callback_data="back_to_sos")],
+            [InlineKeyboardButton("🚫 Не можу писати зараз", callback_data="cant_write_now")],
             [InlineKeyboardButton("🔙 Назад", callback_data="back_to_sos")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -563,6 +565,27 @@ class CampSafetyBot:
             reply_markup=reply_markup,
             parse_mode=ParseMode.HTML
         )
+    async def cant_write_now(self, query, context):
+        """Обробка "Не можу писати зараз" """
+        
+        text = """
+    ✅ <b>Зрозуміло!</b>
+
+    🚨 Дорослі вже знають, що тобі потрібна термінова допомога.
+    Вони зараз шукають спосіб тебе знайти і допомогти.
+
+    🛡️ <b>Що робити зараз:</b>
+    - Спробуй знайти безпечне місце
+    - Будь поруч з дорослими, яким довіряєш
+    - Якщо зможеш пізніше - напиши боту ще раз
+
+    💚 Тримайся! Допомога вже йде!
+    """
+
+        keyboard = [
+            [InlineKeyboardButton("📞 Спробую знайти дорослого", callback_data="back_to_menu")],
+            [InlineKeyboardButton("💬 Все ж таки напишу", callback_data="urgent_help")]
+        ]
 
     async def back_to_menu(self, query):
         """Повернення до головного меню"""
