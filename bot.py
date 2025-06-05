@@ -309,6 +309,10 @@ class CampSafetyBot:
                 InlineKeyboardButton("5️⃣", callback_data="group_5"),
                 InlineKeyboardButton("6️⃣", callback_data="group_6")
             ],
+            [
+                InlineKeyboardButton("7️⃣", callback_data="group_4"),
+                InlineKeyboardButton("8️⃣", callback_data="group_5")
+            ],
             [InlineKeyboardButton("🤐 Не хочу вказувати", callback_data="group_skip")],
             [InlineKeyboardButton("🔙 Назад", callback_data="tell_story")]
         ]
@@ -329,9 +333,9 @@ class CampSafetyBot:
             '3': '3️⃣ Група 3', 
             '4': '4️⃣ Група 4',
             '5': '5️⃣ Група 5',
-            '6': '5️⃣ Група 6',
-            '7': '5️⃣ Група 7',
-            '8': '5️⃣ Група 8',
+            '6': '6️⃣ Група 6',
+            '7': '7️⃣ Група 7',
+            '8': '8️⃣ Група 8',
             'skip': '🤐 Не вказано'
         }.get(group, group)
         
