@@ -40,10 +40,10 @@ class CampSafetyBot:
 Я бот "Безпечний табір" - твій помічник у створенні безпечного та дружнього середовища.
 
 🛡️ Тут ти можеш:
-• Дізнатися про булінг та як з ним боротися
-• Отримати підтримку та поради
-• Анонімно повідомити про проблему
-• Знайти допомогу в складній ситуації
+• дізнатися про булінг та як з ним боротися;
+• отримати підтримку та поради;
+• анонімно повідомити про проблему;
+• знайти допомогу в складній ситуації.
 
 Обирай, що тебе цікавить 👇
 """
@@ -52,7 +52,7 @@ class CampSafetyBot:
             [InlineKeyboardButton("📚 Що таке булінг?", callback_data="what_is_bullying")],
             [InlineKeyboardButton("🛡️ Що робити якщо цькують?", callback_data="what_to_do")],
             [InlineKeyboardButton("👀 Якщо ти свідок", callback_data="witness")],
-            [InlineKeyboardButton("🆘 SOS - Допомога анонімно", callback_data="sos_help")]
+            [InlineKeyboardButton("🆘 SOS - Анонімна допомога", callback_data="sos_help")]
         ]
         
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -76,18 +76,18 @@ class CampSafetyBot:
             await self.witness_advice(query)
         elif query.data == "sos_help":
             await self.sos_help_menu(query)
-        elif query.data == "urgent_help":
-            await self.urgent_help(query, context)
-        elif query.data == "need_help":
-            await self.need_help(query)
-        elif query.data == "want_to_share":
-            await self.want_to_share(query)
+        elif query.data == "tell_story":
+            await self.tell_story(query)
+        elif query.data.startswith("gender_"):
+            gender = query.data.replace("gender_", "")
+            await self.ask_group(query, gender)
+        elif query.data.startswith("group_"):
+            group = query.data.replace("group_", "")
+            await self.start_story_input(query, group)
         elif query.data == "back_to_menu":
             await self.back_to_menu(query)
         elif query.data == "back_to_sos":
             await self.sos_help_menu(query)
-        elif query.data == "cant_write_now":
-            await self.cant_write_now(query, context)
 
     async def explain_bullying(self, query):
         """Пояснення що таке булінг"""
@@ -101,27 +101,27 @@ class CampSafetyBot:
 🔍 <b>Види булінгу:</b>
 
 <b>1. Фізичний булінг</b>
-• Систематично б'ють, штовхають
-• Кидають речі, ламають особисті речі
+• систематично б'ють, штовхають
+• кидають речі, ламають особисті речі
 
 <b>2. Психологічний булінг</b>
-• Систематично насміхаються, обзивають
-• Принижують, лякають, розпускають чутки
+• систематично насміхаються, обзивають
+• принижують, лякають, розпускають чутки
 
 <b>3. Соціальний булінг</b>
-• Не пускають в гру, не дають сісти за стіл
-• Спеціально ігнорують або роблять "ізгоєм"
+• не пускають в гру, не дають сісти за стіл
+• спеціально ігнорують або роблять "ізгоєм"
 
 <b>4. Кібербулінг</b>
-• Пишуть образи в чатах
-• Публікують фото без дозволу
-• Створюють образливі меми
+• пишуть образи в чатах
+• публікують фото без дозволу
+• створюють образливі меми
 
 🚫 <b>Це НЕ булінг, якщо:</b>
-• Діти один раз посварилися - це конфлікт
-• Хтось випадково щось сказав - це не навмисне
+• діти один раз посварилися - це конфлікт
+• хтось випадково щось сказав - це не навмисне
 
-Але якщо образи повторюються і тобі постійно боляче - це булінг!
+Але якщо образи повторюються і тобі постійно боляче - це БУЛІНГ!
 """
         
         keyboard = [[InlineKeyboardButton("🔙 Назад до меню", callback_data="back_to_menu")]]
@@ -144,12 +144,12 @@ class CampSafetyBot:
 
 <b>1. Не мовчи</b>
 🔸 Розкажи дорослому, якому довіряєш:
-• Вихователю/виховательці
-• Психологу табору
-• Лікарю чи медсестрі
-• Адміністрації табору
+    • вихователю/виховательці
+    • психологу табору
+    • лікарю чи медсестрі
+    • адміністрації табору
 
-Це не "ябедничання", а <b>захист себе</b>.
+Це не "зведення наклепу", а <b>власний захист</b>.
 
 <b>2. Не відповідай агресією</b>
 🔸 Не бий, не кричи, не мстися
@@ -168,7 +168,7 @@ class CampSafetyBot:
 """
         
         keyboard = [
-            [InlineKeyboardButton("🆘 SOS - Допомога анонімно", callback_data="sos_help")],
+            [InlineKeyboardButton("🆘 SOS - Анонімна допомога", callback_data="sos_help")],
             [InlineKeyboardButton("🔙 Назад до меню", callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -225,20 +225,20 @@ class CampSafetyBot:
     async def sos_help_menu(self, query):
         """Меню SOS - Допомога анонімно"""
         text = """
-        🆘 <b>SOS - Допомога анонімно</b>
+🆘 <b>SOS - Допомога анонімно</b>
 
-        👋 Тут ти можеш безпечно розповісти про будь-яку ситуацію, яка тебе турбує.
-        Ми не питаємо, як тебе звати. Це <b>повністю анонімно</b>.
+👋 Тут ти можеш безпечно розповісти про будь-яку ситуацію, яка тебе турбує.
+Ми не питаємо, як тебе звати. Це <b>повністю анонімно</b>.
 
-        📝 Розкажи:
-        - Що сталося?
-        - Що тебе турбує?
-        - Потрібна допомога чи просто хочеш поділитися?
+📝 Розкажи:
+• ЩО сталося?
+• що ТЕБЕ турбує?
+• потрібна допомога чи просто хочеш поділитися?
 
-        Ми прочитаємо і допоможемо!
+Ми прочитаємо і допоможемо!
 
-        ✍️ <b>Натисни кнопку і розкажи свою історію.</b>
-        """
+✍️ <b>Натисни кнопку і розкажи свою історію.</b>
+"""
 
         keyboard = [
             [InlineKeyboardButton("📝 Розповісти про ситуацію", callback_data="tell_story")],
@@ -252,82 +252,135 @@ class CampSafetyBot:
             parse_mode=ParseMode.HTML
         )
 
-    async def handle_urgent_details(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Обробка деталей терміновоїі допомоги"""
-        user_id = update.effective_user.id
-        
-        if user_id not in self.user_states or self.user_states[user_id] != "waiting_for_urgent_details":
-            return
-        
-        del self.user_states[user_id]
-        
-        # Відправляємо деталі адміністраторам
-        details_text = f"""
-🔴 <b>🚨 ДЕТАЛІ ТЕРМІНОВОЇІ СИТУАЦІЇ 🚨</b>
+    async def tell_story(self, query):
+        """Початок розповіді - збір базової інформації"""
+        text = """
+📝 <b>Розповісти про ситуацію</b>
 
-📅 Час: {datetime.now().strftime('%d.%m.%Y %H:%M')}
-📝 Додаткова інформація:
+Перш ніж ти розкажеш свою історію, допоможи нам краще зрозуміти контекст:
 
-{update.message.text}
-
-⚠️ КРИТИЧНА СИТУАЦІЯ - НЕГАЙНА РЕАКЦІЯ ПОТРІБНА!
+👤 <b>Твоя стать:</b>
 """
         
-        try:
-            await context.bot.send_message(
-                chat_id=ADMIN_CHAT_ID,
-                text=details_text,
-                parse_mode=ParseMode.HTML
-            )
-            
-            # Якщо є фото
-            if update.message.photo:
-                await context.bot.send_photo(
-                    chat_id=ADMIN_CHAT_ID,
-                    photo=update.message.photo[-1].file_id,
-                    caption="📎 Фото до терміновоїі ситуації"
-                )
-        except Exception as e:
-            logger.error(f"Помилка відправки деталей терміновоїі допомоги: {e}")
-        
-        # Підтверджуємо користувачу
-        confirmation_text = """
-✅ <b>Інформацію передано!</b>
-
-🚨 Дорослі отримали всі деталі ситуації.
-Допомога вже йде до тебе!
-
-Тримайся і пам'ятай - ти не один/одна.
-💚 Ти правильно зробив/зробила, що звернувся за допомогою!
-"""
-        
-        keyboard = [[InlineKeyboardButton("🔙 До головного меню", callback_data="back_to_menu")]]
+        keyboard = [
+            [InlineKeyboardButton("👦 Хлопець", callback_data="gender_male")],
+            [InlineKeyboardButton("👧 Дівчина", callback_data="gender_female")],
+            [InlineKeyboardButton("🤐 Не хочу вказувати", callback_data="gender_skip")],
+            [InlineKeyboardButton("🔙 Назад", callback_data="sos_help")]
+        ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        await update.message.reply_text(
-            confirmation_text,
+        await query.edit_message_text(
+            text,
             reply_markup=reply_markup,
             parse_mode=ParseMode.HTML
         )
 
-    async def handle_help_report(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Обробка звернення за допомогою"""
+    async def ask_group(self, query, gender):
+        """Питання про групу"""
+        # Зберігаємо стать користувача
+        user_id = query.from_user.id
+        if user_id not in self.user_states:
+            self.user_states[user_id] = {}
+        
+        # Перетворюємо технічні назви на читабельні
+        gender_display = {
+            'male': '👦 Хлопець',
+            'female': '👧 Дівчина', 
+            'skip': '🤐 Не вказано'
+        }.get(gender, gender)
+        
+        self.user_states[user_id]['gender'] = gender_display
+        
+        text = """
+🏕️ <b>У якій ти групі?</b>
+
+Це допоможе нам швидше надати допомогу:
+"""
+        
+        keyboard = [
+            [InlineKeyboardButton("1️⃣ Група 1", callback_data="group_1")],
+            [InlineKeyboardButton("2️⃣ Група 2", callback_data="group_2")],
+            [InlineKeyboardButton("3️⃣ Група 3", callback_data="group_3")],
+            [InlineKeyboardButton("4️⃣ Група 4", callback_data="group_4")],
+            [InlineKeyboardButton("5️⃣ Група 5", callback_data="group_5")],
+            [InlineKeyboardButton("🤐 Не хочу вказувати", callback_data="group_skip")],
+            [InlineKeyboardButton("🔙 Назад", callback_data="tell_story")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
+
+    async def start_story_input(self, query, group):
+        """Початок введення тексту"""
+        user_id = query.from_user.id
+        if user_id not in self.user_states:
+            self.user_states[user_id] = {}
+        
+        # Перетворюємо технічні назви на читабельні
+        group_display = {
+            '1': '1️⃣ Група 1',
+            '2': '2️⃣ Група 2',
+            '3': '3️⃣ Група 3', 
+            '4': '4️⃣ Група 4',
+            '5': '5️⃣ Група 5',
+            'skip': '🤐 Не вказано'
+        }.get(group, group)
+        
+        self.user_states[user_id]['group'] = group_display
+        self.user_states[user_id]['status'] = "waiting_for_story"
+        
+        # Показуємо зібрану інформацію
+        gender = self.user_states[user_id].get('gender', '🤐 Не вказано')
+        
+        text = f"""
+✍️ <b>Тепер розкажи свою історію</b>
+
+📋 <b>Інформація:</b>
+👤 Стать: {gender}
+🏕️ Група: {group_display}
+
+📝 <b>Розкажи детально:</b>
+• Що сталося?
+• Коли це відбувається?
+• Хто задіяний?
+• Як довго це триває?
+• Будь-які інші важливі деталі
+
+Можеш також надіслати фото чи скріншот.
+
+✍️ <b>Напиши наступним повідомленням свою історію.</b>
+"""
+        
+        keyboard = [[InlineKeyboardButton("❌ Скасувати", callback_data="back_to_menu")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.HTML)
+
+    async def handle_story_report(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Обробка розповіді з додатковою інформацією"""
         user_id = update.effective_user.id
         
-        if user_id not in self.user_states or self.user_states[user_id] != "waiting_for_help_report":
+        if user_id not in self.user_states:
             return
+        
+        # Отримуємо зібрану інформацію
+        gender = self.user_states[user_id].get('gender', '🤐 Не вказано')
+        group = self.user_states[user_id].get('group', '🤐 Не вказано')
         
         # Очищаємо стан
         del self.user_states[user_id]
         
         # Формуємо повідомлення для адміністраторів
         report_text = f"""
-🟡 <b>ЗВЕРНЕННЯ ЗА ДОПОМОГОЮ</b>
+🆘 <b>АНОНІМНЕ ЗВЕРНЕННЯ</b>
 
 📅 Час: {datetime.now().strftime('%d.%m.%Y %H:%M')}
 👤 Від: Анонімний користувач
-📝 Повідомлення:
+👦👧 Стать: {gender}
+🏕️ Група: {group}
 
+📝 <b>Повідомлення:</b>
 {update.message.text}
 
 ---
@@ -342,21 +395,20 @@ class CampSafetyBot:
                 parse_mode=ParseMode.HTML
             )
             
-            # Якщо є фото/документи
             if update.message.photo:
                 await context.bot.send_photo(
                     chat_id=ADMIN_CHAT_ID,
                     photo=update.message.photo[-1].file_id,
-                    caption="📎 Фото до звернення за допомогою"
+                    caption="📎 Фото до звернення"
                 )
         except Exception as e:
             logger.error(f"Помилка відправки звернення: {e}")
         
         # Підтверджуємо користувачу
         confirmation_text = """
-✅ <b>Дякуємо за звернення!</b>
+✅ <b>Дякуємо за твоє звернення!</b>
 
-Ми отримали твоє повідомлення. Тебе почули.
+Ми отримали твоє повідомлення разом з додатковою інформацією. Тебе почули.
 
 Дорослі, яким можна довіряти, допоможуть розібратися з ситуацією.
 
@@ -371,89 +423,6 @@ class CampSafetyBot:
             reply_markup=reply_markup,
             parse_mode=ParseMode.HTML
         )
-
-    async def handle_sharing(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Обробка ділення думками"""
-        user_id = update.effective_user.id
-        
-        if user_id not in self.user_states or self.user_states[user_id] != "waiting_for_sharing":
-            return
-        
-        # Очищаємо стан
-        del self.user_states[user_id]
-        
-        # Формуємо повідомлення для адміністраторів
-        sharing_text = f"""
-🟢 <b>ДІЛЕННЯ ДУМКАМИ</b>
-
-📅 Час: {datetime.now().strftime('%d.%m.%Y %H:%M')}
-👤 Від: Анонімний користувач
-💭 Повідомлення:
-
-{update.message.text}
-
----
-💚 Інформаційне повідомлення
-"""
-        
-        # Відправляємо в адмін-чат
-        try:
-            await context.bot.send_message(
-                chat_id=ADMIN_CHAT_ID,
-                text=sharing_text,
-                parse_mode=ParseMode.HTML
-            )
-            
-            # Якщо є фото/документи
-            if update.message.photo:
-                await context.bot.send_photo(
-                    chat_id=ADMIN_CHAT_ID,
-                    photo=update.message.photo[-1].file_id,
-                    caption="📎 Фото до ділення думками"
-                )
-        except Exception as e:
-            logger.error(f"Помилка відправки ділення думками: {e}")
-        
-        # Підтверджуємо користувачу
-        confirmation_text = """
-💚 <b>Дякуємо, що поділився!</b>
-
-Ми прочитали твоє повідомлення. 
-
-Дякуємо за довіру! Ділитися своїми думками і переживаннями - це дуже важливо.
-
-Якщо ситуація зміниться і потрібна буде допомога - завжди звертайся!
-"""
-        
-        keyboard = [[InlineKeyboardButton("🔙 До головного меню", callback_data="back_to_menu")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        
-        await update.message.reply_text(
-            confirmation_text,
-            reply_markup=reply_markup,
-            parse_mode=ParseMode.HTML
-        )
-    async def cant_write_now(self, query, context):
-        """Обробка "Не можу писати зараз" """
-        
-        text = """
-    ✅ <b>Зрозуміло!</b>
-
-    🚨 Дорослі вже знають, що тобі потрібна термінова допомога.
-    Вони зараз шукають спосіб тебе знайти і допомогти.
-
-    🛡️ <b>Що робити зараз:</b>
-    - Спробуй знайти безпечне місце
-    - Будь поруч з дорослими, яким довіряєш
-    - Якщо зможеш пізніше - напиши боту ще раз
-
-    💚 Тримайся! Допомога вже йде!
-    """
-
-        keyboard = [
-            [InlineKeyboardButton("📞 Спробую знайти дорослого", callback_data="back_to_menu")],
-            [InlineKeyboardButton("💬 Все ж таки напишу", callback_data="urgent_help")]
-        ]
 
     async def back_to_menu(self, query):
         """Повернення до головного меню"""
@@ -488,12 +457,8 @@ class CampSafetyBot:
         
         # Перевіряємо стан користувача
         if user_id in self.user_states:
-            if self.user_states[user_id] == "waiting_for_urgent_details":
-                await self.handle_urgent_details(update, context)
-            elif self.user_states[user_id] == "waiting_for_help_report":
-                await self.handle_help_report(update, context)
-            elif self.user_states[user_id] == "waiting_for_sharing":
-                await self.handle_sharing(update, context)
+            if self.user_states[user_id].get('status') == "waiting_for_story":
+                await self.handle_story_report(update, context)
         else:
             # Якщо користувач пише без команди
             await update.message.reply_text(
